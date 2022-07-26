@@ -8,7 +8,6 @@
 */
 
 #include <stdio.h>
-//#include <threads.h>
 #include <pthread.h>
 #include <time.h>
 #include <unistd.h>
@@ -46,6 +45,10 @@ void somaMatrizes(){
     for (int i=0; i<TAM; i++){
         for (int j=0; j<TAM; j++){
             printf("%d ",m1[i][j] + m2[i][j]);
+
+            for (int k=0; k<10000000; k++){
+
+            }
         }
         printf("\n");
     }
@@ -88,9 +91,9 @@ void * somarMatrizes_Thread(void *numero){
 }
 
 int main(){
-    long double tempo, tempo_thread;
-    clock_t inicio, fim;
-    clock_t inicio_thread, fim_thread;
+    
+    struct timespec inicio, fim, t_inicio, t_fim;
+    double tempo, t_tempo;
 
     p_main();
    
@@ -107,19 +110,18 @@ int main(){
 
     printf("Soma sem threads: \n");
 
-    inicio = clock();
+    clock_gettime(CLOCK_MONOTONIC, &inicio);
 
     somaMatrizes();
 
-    fim  = clock();
+    clock_gettime(CLOCK_MONOTONIC, &fim);
 
     // COM THREAD ------------------------------------
 
     pthread_t threads[4];
     int num;
 
-    inicio_thread = clock();
-
+    clock_gettime(CLOCK_MONOTONIC, &t_inicio);
 
     printf("Soma com threads: \n");
     for (int i=0; i<4; i++){
@@ -133,13 +135,16 @@ int main(){
         pthread_join(threads[i], NULL);
     }
 
-    
-    
-    fim_thread = clock();
+    clock_gettime(CLOCK_MONOTONIC, &t_fim);
 
-    tempo = (double)(fim - inicio) / CLOCKS_PER_SEC;
-    tempo_thread = (double)(fim_thread - inicio_thread) / CLOCKS_PER_SEC;
+    tempo = (double) (fim.tv_sec - inicio.tv_sec);
+    tempo += (double) (fim.tv_nsec - inicio.tv_nsec) / 1000000000.0;
 
-    printf("------------------\n Tempo sem threads: %LF\n Tempo com threads: %LF.", tempo, tempo_thread);
-    
+    t_tempo = (double) (t_fim.tv_sec - t_inicio.tv_sec);
+    t_tempo += (double) (t_fim.tv_nsec - t_inicio.tv_nsec) / 1000000000.0;
+
+    printf("-----------------\n");
+    printf("Tempo sem thread: %f ns\nTempo com Thread: %f ns \n", tempo, t_tempo);
+
+    printf("Tempo com thread %f  mais rápido\n", tempo/t_tempo *100);
 }

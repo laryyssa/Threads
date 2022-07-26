@@ -15,7 +15,8 @@ Implementar o seguinte programa:
 
 + Teste o programa com e sem semáforos (ambos com threads), observe o resultado e explique o que está acontecendo.
 	
-+ Compare o tempo de execução sem threads e com threads + semáforos. Use alguma biblioteca para pegar o tempo atual do sistema. Qual o mais rápido?
++ Compare o tempo de execução sem threads e com threads + semáforos. Use alguma biblioteca para pegar o tempo atual do sistema. 
+  Qual o mais rápido?
 
 + (*OBRIGATÓRIO*) Construa uma função que avalia se o resultado final está correto, ou seja:
 	* faça remoção de múltiplos de 2 e 5 sequencialmente (ou seja, sem usar threads).
@@ -31,25 +32,90 @@ Implementar o seguinte programa:
 
 #define TAM 10
 
+int m[TAM];
+int n[TAM];
+int o[TAM];
+
+void * removePares(void ** v[TAM]){
+    int *vetor = (int*)v;
+    for (int i=0; i<TAM; i++){
+        if (vetor[i] % 2 == 0){
+            vetor[i] = 0;
+        }
+    }
+}
+
+void * removeMultiplosCinco(void **v[TAM]){
+    int *vetor = (int*)v;
+    for (int i=0; i<TAM; i++){
+        if (vetor[i] % 5 == 0){
+            vetor[i] = 0;
+        }
+    }
+}
+
+void imprimir(int *vetor){
+    for(int i; i<TAM; i++){
+        printf("%d ", vetor[i]);
+    }
+    printf("\n");
+}
+
 int main(){
-    int i;
-    int *v;
+    int i, valor;
+    struct timespec inicio, fim, s_inicio, s_fim;
 
     srand(time(NULL));
 
     for(i=1 ; i <= TAM ; i++){
-        v[i] = rand()%100;
-        printf("Numero %d: %d\n",i, v[i]);
+        valor = rand()%100;
+        m[i] = valor;
+        n[i] = valor;
+        o[i] = valor;
+        printf("Numero %d: %d\n",i, valor);
     }
 
     // -------------------------------- COM THREADS ----------------------------------
 
-    thrd_t T1, T2;
+    pthread_t T1, T2;
 
     // SEM SEMAFORO ----------------------------------
 
+    clock_gettime(CLOCK_MONOTONIC, &inicio);
+
+    if (pthread_create(&T1, NULL, removePares, (void*)m) != 0){
+        printf("erro");
+    }
+    if (pthread_create(&T2, NULL, removeMultiplosCinco, (void*)m) != 0){
+        printf("erro");
+    }
+    pthread_join(T1, NULL);
+    pthread_join(T2, NULL);
+
+    clock_gettime(CLOCK_MONOTONIC, &fim);
 
     // COM SEMAFORO ----------------------------------
 
+    clock_gettime(CLOCK_MONOTONIC, &s_inicio);
+
+
+
+    clock_gettime(CLOCK_MONOTONIC, &s_fim);
+
     // -------------------------------- SEM THREADS ----------------------------------
+    
+    for (int i=0; i<TAM; i++){
+        if (o[i] % 2 ==0){
+            o[i] = 0;
+        } else if (o[i] % 5 == 0){
+            o[i] = 0;
+        }
+    }
+
+    printf("Com thread, sem semáforo: \n");
+    imprimir(m);
+    printf("Com thread, com semáforo: \n");
+    imprimir(n);
+    printf("Sem thread, sem semáforo: \n");
+    imprimir(o);
 }
