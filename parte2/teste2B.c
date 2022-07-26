@@ -8,7 +8,8 @@
 */
 
 #include <stdio.h>
-#include <threads.h>
+//#include <threads.h>
+#include <pthread.h>
 #include <time.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -51,7 +52,7 @@ void somaMatrizes(){
     printf("\n");
 }
 
-void somarMatrizes_Thread(void *numero){
+void * somarMatrizes_Thread(void *numero){
     int *num = (int*)numero;
     int t = TAM/2;
     switch (*num){
@@ -60,24 +61,28 @@ void somarMatrizes_Thread(void *numero){
                 for (int j = 0; j<t; j++){
                     printf("%d ",m1[i][j] + m2[i][j]);
                 }
+                printf("\n");
             }
         case 2:
             for (int i=0; i<t; i++){
                 for (int j = t; j<TAM; j++){
                     printf("%d ",m1[i][j] + m2[i][j]);
                 }
+                printf("\n");
             }
         case 3:
             for (int i=t; i<TAM; i++){
                 for (int j = 0; j<t; j++){
                     printf("%d ",m1[i][j] + m2[i][j]);
                 }
+                printf("\n");
             }
         case 4:
             for (int i=t; i<TAM; i++){
                 for (int j = t; j<TAM; j++){
                     printf("%d ",m1[i][j] + m2[i][j]);
                 }
+                printf("\n");
             }
     }
 }
@@ -100,6 +105,8 @@ int main(){
     
     // SEM THREAD ------------------------------------
 
+    printf("Soma sem threads: \n");
+
     inicio = clock();
 
     somaMatrizes();
@@ -108,34 +115,25 @@ int main(){
 
     // COM THREAD ------------------------------------
 
-    thrd_t t1, t2, t3, t4;
-    //thrd_t *threads[] = {&t1, &t2, &t3, &t4};
+    pthread_t threads[4];
+    int num;
 
     inicio_thread = clock();
 
-    /* for(int i=0; i<4; i++){
-        thrd_create(threads[i], (thrd_start_t) somaMatrizes, NULL);
-    }
+
+    printf("Soma com threads: \n");
     for (int i=0; i<4; i++){
-        thrd_join(threads[i], NULL);
-    } */
+        num = i+1;
+        if (pthread_create(&threads[i], NULL, somarMatrizes_Thread, (void*)&num) != 0){
+            printf("erro");
+        }
+    }
 
-    int *aux;
+    for (int i=0; i<4; i++){
+        pthread_join(threads[i], NULL);
+    }
 
-    *aux = 1;
-    thrd_create(&t1, (thrd_start_t) somaMatrizes, aux);
-    /* thrd_create(&t2, (thrd_start_t) somaMatrizes, );
-    thrd_create(&t3, (thrd_start_t) somaMatrizes, );
-    thrd_create(&t4, (thrd_start_t) somaMatrizes, ); */
-
-    thrd_join(&t1, NULL);
-
-    /* thrd_join(&t1, NULL);
-    thrd_join(&t2, NULL);
-    thrd_join(&t3, NULL);
-    thrd_join(&t4, NULL); */
-
-   
+    
     
     fim_thread = clock();
 
