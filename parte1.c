@@ -20,15 +20,15 @@ Dica: Para chamar gettid, use instrução syscall(SYS_gettid) e faça include da
 #include <unistd.h>
 #include <string.h>
 
-#include <pthread.h>
+#include <threads.h>
 #include <sys/syscall.h>
 
 void helloThread(void *argumento){
     char *nome = (char *)argumento;
-    long id_thread = pthrd_current();
+    long id_thread = thrd_current();
     long id_syscall = syscall(SYS_gettid);
 
-    printf("Eu sou a thread %s e meu ID pelo threads.h é %ld\n", nome, id_thread);
+    printf("Eu sou a thread %s e meu ID pelo threads.h é %lu\n", nome, id_thread);
     printf("\n");
     printf("Eu sou a thread %s e meu ID pelo syscall.h é %ld\n", nome, id_syscall);
     printf("\n");
@@ -41,7 +41,7 @@ int main(){
     scanf("%d", &n);
     printf("\n");
 
-    pthread_t *threads = malloc(sizeof(pthread_t) * n);
+    thrd_t *threads = malloc(sizeof(thrd_t) * n);
     char **nomes = malloc(sizeof(char**) * n);
 
     for (int i=0; i<n; i++){
@@ -50,14 +50,12 @@ int main(){
     }
 
     for (int i=0; i<n; i++){
-        if (pthread_create(threads[i], NULL, helloThread, (void*)&nomes[i]) != 0){
-            printf("erro");
-        }
+        thrd_create(&threads[i], (thrd_start_t) helloThread, nomes[i]);
 
     }
 
     for (int i=0; i<n; i++){
-        pthread_join(threads[i], NULL);
+        thrd_join(threads[i], NULL);
     }
 
 }
