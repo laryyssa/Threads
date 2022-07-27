@@ -36,20 +36,22 @@ int m[TAM];
 int n[TAM];
 int o[TAM];
 
-void * removePares(void ** v[TAM]){
-    int *vetor = (int*)v;
+void * removePares(void * v){
+    int **vetor = (int**)v;
+    int *vetor_aux = (int*)vetor;
     for (int i=0; i<TAM; i++){
-        if (vetor[i] % 2 == 0){
-            vetor[i] = 0;
+        if (vetor_aux[i] % 2 == 0){
+            vetor_aux[i] = 0;
         }
     }
 }
 
-void * removeMultiplosCinco(void **v[TAM]){
-    int *vetor = (int*)v;
+void * removeMultiplosCinco(void *v){
+    int **vetor = (int**)v;
+    int *vetor_aux = (int*)vetor;
     for (int i=0; i<TAM; i++){
-        if (vetor[i] % 5 == 0){
-            vetor[i] = 0;
+        if (vetor_aux[i] % 5 == 0){
+            vetor_aux[i] = 0;
         }
     }
 }
@@ -98,7 +100,7 @@ int main(){
 
     clock_gettime(CLOCK_MONOTONIC, &s_inicio);
 
-
+    
 
     clock_gettime(CLOCK_MONOTONIC, &s_fim);
 

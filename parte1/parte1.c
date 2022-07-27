@@ -28,7 +28,7 @@ void helloThread(void *argumento){
     long id_thread = thrd_current();
     long id_syscall = syscall(SYS_gettid);
 
-    printf("Eu sou a thread %s e meu ID pelo threads.h é %ld\n", nome, id_thread);
+    printf("Eu sou a thread %s e meu ID pelo threads.h é %lu\n", nome, id_thread);
     printf("\n");
     printf("Eu sou a thread %s e meu ID pelo syscall.h é %ld\n", nome, id_syscall);
     printf("\n");
@@ -58,9 +58,4 @@ int main(){
         thrd_join(threads[i], NULL);
     }
 
-
-    /* for (int i=0; i<n; i++){
-        free(nomes[i]);
-    }
-    free(threads); */
 }
