@@ -1,0 +1,2 @@
+laryssa@LAPTOP-3PU3J9UB:~/TrabalhoSO$ gcc parte2.c -lpthread
+laryssa@LAPTOP-3PU3J9UB:~/TrabalhoSO$ ./a.out

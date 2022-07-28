@@ -81,7 +81,7 @@ void * removeComSemaforo(void *v){
 
 void removerSemThread (){
     printf("Imprimir sem Threads \n");
-    for (int i=TAM; i>=0; i--){
+    for (int i=0; i<TAM; i++){
         if (o[i] % 2 == 0){
             o[i] = 0;
         } else if (n[i] % 5 == 0){
@@ -117,7 +117,7 @@ int main(){
         m[i] = valor;
         n[i] = valor;
         o[i] = valor;
-       // printf("Numero %d: %d\n",i, valor);
+        printf("Numero %d: %d\n",i, valor);
     }
 
     
@@ -147,8 +147,9 @@ int main(){
     clock_gettime(CLOCK_MONOTONIC, &s_inicio);
 
     for(int i=0; i<2; i++){
-        if (pthread_create(threads[i], NULL, removeComSemaforo, (void*)n) != 0){
-        printf("erro");
+        if (pthread_create(threads[i], NULL, removeComSemaforo, NULL) != 0){
+            printf("erro");
+            exit(1);
         }
     }
 
@@ -158,14 +159,15 @@ int main(){
 
     // ----------------------------------------------------------------
 
+    
     printf("\nCom thread, sem semáforo: \n");
-    for(int i; i<TAM; i++){
+    for(int i=0; i<TAM; i++){
         printf("%d ", m[i]);
     }
     printf("\n");
 
     printf("\nCom thread, com semáforo: \n");
-    for(int i; i<TAM; i++){
+    for(int i=0; i<TAM; i++){
         printf("%d ", n[i]);
     }
     printf("\n");

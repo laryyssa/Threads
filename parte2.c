@@ -33,10 +33,19 @@ int preencher(int i, int j){
     }
 }
 
-/*  1 | 2
-    ______
+/*  
+           0 -- t-1 | t --- TAM (j - coluna)
 
-    3 | 4 */
+   0       1  1  1  |  2  2  2
+   |       1  1  1  |  2  2  2
+   t-1     1  1  1  |  2  2  2
+          ---------------------
+   t       3  3  3  |  4  4  4
+   |       3  3  3  |  4  4  4
+   TAM     3  3  3  |  4  4  4
+    
+   (i - linha)
+ */
 
 void p_main(){
     for (int i=0; i<TAM; i++){
@@ -127,6 +136,7 @@ int main(){
         num = i+1;
         if (pthread_create(&threads[i], NULL, somarMatrizes_Thread, (void*)&num) != 0){
             printf("erro");
+            exit(1);
         }
     }
 

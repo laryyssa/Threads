@@ -25,10 +25,14 @@ Dica: Para chamar gettid, use instrução syscall(SYS_gettid) e faça include da
 
 void helloThread(void *argumento){
     char *nome = (char *)argumento;
-    long id_thread = pthrd_current();
-    long id_syscall = syscall(SYS_gettid);
+    
+    long id_thread = pthrd_current(); 
+    /* Identifador implementado pelo programa; ID único no processo e não é visível fora dele */
 
-    printf("Eu sou a thread %s e meu ID pelo threads.h é %ld\n", nome, id_thread);
+    long id_syscall = syscall(SYS_gettid);  
+    /* kernel; valor unico para o processo e fora dele */
+
+    printf("Eu sou a thread %s e meu ID pelo threads.h é %lu\n", nome, id_thread);
     printf("\n");
     printf("Eu sou a thread %s e meu ID pelo syscall.h é %ld\n", nome, id_syscall);
     printf("\n");
@@ -45,13 +49,14 @@ int main(){
     char **nomes = malloc(sizeof(char**) * n);
 
     for (int i=0; i<n; i++){
-        nomes[i] = malloc(sizeof(char*) * 16);
+        nomes[i] = malloc(sizeof(char*) * 20);
         sprintf(nomes[i], "thread_%d", i);
     }
 
     for (int i=0; i<n; i++){
         if (pthread_create(threads[i], NULL, helloThread, (void*)&nomes[i]) != 0){
             printf("erro");
+            exit(1);
         }
 
     }
